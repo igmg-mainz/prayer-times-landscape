@@ -2,13 +2,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -20%;
+  margin-top: -30%;
   margin-left: 18%;
 }
 
 .clock {
-  width: 28rem;
-  height: 28rem;
+  width: 20rem;
+  height: 20rem;
   display: flex;
   justify-content: center;
   align-items: center;

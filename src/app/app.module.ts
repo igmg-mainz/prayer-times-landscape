@@ -19,6 +19,7 @@ import { MatDialogModule } from '@angular/material';
 import { AnnouncementDialogComponent } from './announcement-dialog/announcement-dialog.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AnnouncementComponent } from './announcement/announcement.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AnnouncementComponent } from './announcement/announcement.component';
     DateComponent,
     WeatherComponent,
     AnnouncementDialogComponent,
-    AnnouncementComponent
+    AnnouncementComponent,
+    FooterComponent
   ],
   entryComponents: [
     AnnouncementDialogComponent

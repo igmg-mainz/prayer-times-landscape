@@ -10,33 +10,34 @@
   border-radius: 5px 5px 5px 5px;
   color: black;
 
-  width: 56rem;
-  height: 23rem;
+  width: 38.5rem;
+  height: 16.5rem;
 }
 
 #asma-circle {
   background-color: #989034;
   border-radius: 50%;
-  margin-top: 1%;
-  width: 150rem;
-  height: 15rem;
+  margin-top: -5%;
+  width: 200rem;
+  height: 10rem;
   text-align: center;
   margin-left: -4.5rem;
 }
 
 #asma {
   position: relative;
-  margin-top: 4rem;
-  font-size: 5rem;
+  margin-top: 2.5rem;
+  font-size: 3.5rem;
 }
 
 #asma-transcription {
   margin-top: -3rem;
   margin-left: 3rem;
-  font-size: 4.5rem;
+  font-size: 3rem;
+  font-weight: bold;
 }
 
 #asma-description {
   margin-left: 3rem;
-  font-size: 3rem;
+  font-size: 1.5rem;
 }

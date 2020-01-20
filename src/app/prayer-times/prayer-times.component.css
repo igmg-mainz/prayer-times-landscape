@@ -1,6 +1,6 @@
 #body {
   padding: 20px;
-  height: 60rem;
+  height: fit-content;
 }
 
 #location {

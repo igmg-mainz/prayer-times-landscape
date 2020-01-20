@@ -9,11 +9,11 @@
 }
 
 #singlePrayer {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 article {
-  font-size: 4rem;
+  font-size: 3rem;
   font-family: "Times New Roman", Times, serif;
 }
 
@@ -23,5 +23,5 @@ article {
 }
 
 #arabic {
-  font-size: 400%;
+  font-size: 3rem;
 }
