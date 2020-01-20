@@ -1,0 +1,16 @@
+<div *ngIf="asma$ | async as asma; else loading" id="asma-div" class="row">
+
+  <div class="col-md-4" id="asma-circle">
+    <p id="asma">{{asma.arabic}}</p>
+  </div>
+
+  <div class="col-md-8">
+    <p id="asma-transcription">{{asma.transcription}}</p>
+    <p id="asma-description">{{asma.description}}</p>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <h4>Asma wird geladen ...</h4>
+</ng-template>

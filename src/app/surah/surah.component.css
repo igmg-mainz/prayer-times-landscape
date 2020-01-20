@@ -1,0 +1,33 @@
+#ayah {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 200%;
+  font-weight: bold;
+  padding: 30px;
+}
+
+#ayah-div {
+  padding: 50px;
+  box-shadow: 10px 0 10px 10px #a2a2a2;
+
+  background-color: rgba(255, 242, 164, 0.23);
+  border-color: rgba(238, 222, 146, 0.24);
+  opacity: 0.6;
+  border-radius: 55px 5px 5px 5px;
+  color: black;
+
+  width: 100%;
+  height: 53%;
+
+  margin: 15% 0 0 100px;
+}
+
+#before {
+  border: 2px solid black;
+}
+
+#after {
+  position: relative;
+  bottom: 0;
+  margin-bottom: 5%;
+  border: 2px solid black;
+}

@@ -1,0 +1,36 @@
+.prayerBoard {
+  padding: 30px;
+  box-shadow: 10px 10px 10px 10px #a2a2a2;
+
+  background-color: rgba(255, 242, 164, 0.23);
+  border-color: rgba(238, 222, 146, 0.24);
+  opacity: 0.6;
+  border-radius: 5px 55px 5px 5px;
+  color: black;
+
+  width: 35%;
+  height: 100%;
+
+  margin: 5% 15px 0;
+}
+
+.row {
+  margin-top: 2%;
+}
+
+#board {
+  background-image: url("~src/mosque.jpg");
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: inherit;
+  background-size: cover;
+
+  height: 100%;
+  padding: 20px;
+}
+
+
+
+
+
