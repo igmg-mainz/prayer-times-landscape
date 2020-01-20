@@ -11,7 +11,7 @@ import { Location } from '../shared/model/location';
 })
 export class WeatherComponent implements OnInit {
 
-  private currentWeather$: Observable<Weather>;
+  public currentWeather$: Observable<Weather>;
 
   constructor(private weatherService: WeatherService) { }
 
