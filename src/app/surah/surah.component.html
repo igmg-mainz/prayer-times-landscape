@@ -1,7 +1,5 @@
 <div *ngIf="surah$ | async as surah; else loading" id="ayah-div">
-  <hr id="before"/>
-  <p id="ayah">{{getAyah(surah)}}</p>
-  <hr id="after"/>
+  <div id="ayah">{{getAyah(surah)}}</div>
 </div>
 
 <ng-template #loading>

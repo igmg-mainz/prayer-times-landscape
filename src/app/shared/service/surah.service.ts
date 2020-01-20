@@ -6,7 +6,7 @@ import { Surah } from '../model/surah';
 import { AuthService } from './auth.service';
 
 // const uri = 'https://digital-prayer.herokuapp.com/quran/surah/random';
-const uri = 'http://localhost:8092/quran/surah/random';
+const uri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/quran/surah/random';
 
 
 @Injectable({

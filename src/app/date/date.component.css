@@ -1,7 +1,7 @@
 #body {
   text-align: center;
   background-color: rgba(255, 242, 164, 0.23);;
-  height: 31rem;
+  height: 38rem;
   margin-left: 20%;
   margin-top: 9rem;
   border-style: ridge;
@@ -10,17 +10,17 @@
 }
 
 #day {
-  margin-top: -5%;
-  font-size: 200px;
+  margin-top: -3.5rem;
+  font-size: 19rem;
   font-weight: bold;
 }
 
 #turkish {
-  margin-top: -5%;
-  font-size: 350%;
+  margin-top: -10%;
+  font-size: 5rem;
 }
 
 #gregorian {
-  margin-top: 15%;
-  font-size: 300%;
+  margin-top: 3rem;
+  font-size: 3.5rem;
 }

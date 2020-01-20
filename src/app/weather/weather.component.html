@@ -1,3 +1,7 @@
-<p id="temp">
-  6°
-</p>
+<ng-container *ngIf="currentWeather$ | async as currentWeather; else loading">
+  <p id="temperature">{{getTemperature(currentWeather)}}°</p>
+</ng-container>
+
+<ng-template #loading>
+  Wetterdaten werden geladen ...
+</ng-template>

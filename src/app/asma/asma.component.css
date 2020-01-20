@@ -1,5 +1,5 @@
 #asma-div {
-  padding: 30px;
+  padding: 5rem;
   box-shadow: 10px 10px 10px 10px #a2a2a2;
 
   background-color: rgba(255, 242, 164, 0.23);
@@ -10,31 +10,33 @@
   border-radius: 5px 5px 5px 5px;
   color: black;
 
-  width: 100%;
-  height: 33%;
+  width: 56rem;
+  height: 23rem;
 }
 
 #asma-circle {
   background-color: #989034;
   border-radius: 50%;
-  margin-top: 5%;
-  width: 100%;
-  height: 80%;
+  margin-top: 1%;
+  width: 150rem;
+  height: 15rem;
   text-align: center;
-  margin-left: -2.5%;
+  margin-left: -4.5rem;
 }
 
 #asma {
   position: relative;
-  margin-top: 30%;
-  font-size: 450%;
+  margin-top: 4rem;
+  font-size: 5rem;
 }
 
 #asma-transcription {
-  margin-top: 10%;
-  font-size: 400%;
+  margin-top: -3rem;
+  margin-left: 3rem;
+  font-size: 4.5rem;
 }
 
 #asma-description {
-  font-size: 200%;
+  margin-left: 3rem;
+  font-size: 3rem;
 }
