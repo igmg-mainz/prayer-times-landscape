@@ -1,9 +1,10 @@
 .prayerBoard {
-  padding: 30px;
+  padding: 24px;
   box-shadow: 10px 10px 10px 10px #a2a2a2;
 
-  /*background-color: rgba(255, 242, 164, 0.23);*/
-  background-color: rgba(137, 127, 88, 0.23);;
+  /*background-color: rgba(137, 127, 88, 0.23);;*/
+
+  background-color: rgba(192, 192, 192, 0.59);
   border-color: rgba(238, 222, 146, 0.24);
   border-radius: 5px 55px 5px 5px;
   color: black;
