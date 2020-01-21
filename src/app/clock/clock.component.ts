@@ -9,7 +9,9 @@ import { timer } from 'rxjs';
 export class ClockComponent implements OnInit {
 
   private currentDate;
-  constructor() {}
+
+  constructor() {
+  }
 
   ngOnInit() {
     const boundedTimer = timer(0, 1000);
@@ -26,9 +28,15 @@ export class ClockComponent implements OnInit {
     const min = this.currentDate.getMinutes() / 60;
     const hr = this.currentDate.getHours() / 12;
 
-    (document.querySelector('#sc') as HTMLElement).style.transform = `rotateZ(${sec * 360}deg)`;
-    (document.querySelector('#mn') as HTMLElement).style.transform = `rotateZ(${min * 360}deg)`;
-    (document.querySelector('#hr') as HTMLElement).style.transform = `rotateZ(${hr * 360}deg)`;
+    const scElement = (document.querySelector('#sc') as HTMLElement);
+    const mnElement = (document.querySelector('#mn') as HTMLElement);
+    const hrElement = (document.querySelector('#hr') as HTMLElement);
+
+    if (scElement && mnElement && hrElement) {
+      scElement.style.transform = `rotateZ(${sec * 360}deg)`;
+      mnElement.style.transform = `rotateZ(${min * 360}deg)`;
+      hrElement.style.transform = `rotateZ(${hr * 360}deg)`;
+    }
 
   }
 

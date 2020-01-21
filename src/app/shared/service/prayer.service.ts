@@ -8,9 +8,6 @@ import { catchError, delay, map, retryWhen, take, tap } from 'rxjs/operators';
 import { Location } from '../model/location';
 import { AuthService } from './auth.service';
 
-
-// const uri = 'http://localhost:8080/prayers/location/{location}?month=';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -30,6 +27,7 @@ export class PrayerService {
 
     const myDate = new Date();
     const currentDay = this.timeService.getDay(myDate);
+    // const uri = `http://localhost:8092/prayers/location/${location}?month=`;
     const uri = `https://h2861894.stratoserver.net/services/DigitalPrayerServer/prayers/location/${location}?month=`;
 
     const httpOptions = this.authService.getBasicWithHeader();

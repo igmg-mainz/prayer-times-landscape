@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Asma } from '../model/asma';
 import { delay, retryWhen, take } from 'rxjs/operators';
 
+// const uri = 'http://localhost:8092/asma';
 const uri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/asma';
 
 

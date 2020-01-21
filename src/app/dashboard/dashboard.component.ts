@@ -17,25 +17,23 @@ export class DashboardComponent implements OnInit {
   public currentDate: Date;
   public currentDateSubject: BehaviorSubject<Date> = new BehaviorSubject<Date>(this.currentDate);
   public nextPrayer$: Observable<Prayer>;
-
+  private timerSubscription;
 
   private leftTime: number;
-  private announcements: Announcement[];
+  private announcements$: Observable<Array<Announcement>>;
 
   constructor(private prayerService: PrayerService,
               private timeService: TimeService,
               private announcementService: AnnouncementService,
               public router: Router) {
-    console.log('DashboardComponent constructor');
   }
 
 
   ngOnInit() {
-    console.log('DashboardComponent ngOnInit');
     this.initDate();
     this.initAndStartTimer();
     this.initLeftTime();
-    this.initAnnouncements();
+    this.initAndShowAnnouncements();
   }
 
   onTimerFinished() {
@@ -48,36 +46,13 @@ export class DashboardComponent implements OnInit {
 
   private initAndStartTimer() {
     const boundedTimer = timer(0, 1000);
-    boundedTimer.subscribe(() => {
+    this.timerSubscription = boundedTimer.subscribe(() => {
       this.updateTime();
       this.prayerService.updatePrayers(this.currentDate);
       this.refreshWindowAtMidnight();
-      this.showAnnouncements();
     });
   }
 
-  private showAnnouncements() {
-    this.prayerService.prayerChangedSubject.subscribe(prayer => {
-      if (prayer) {
-
-        console.log(prayer);
-        if (this.announcements === undefined) {
-          this.initAnnouncements();
-        }
-
-        const showMe = this.announcements.find(a => a.text);
-
-        if (this.announcementService.counter === 0 && !showMe.isShown) {
-
-          this.announcementService.counter++;
-          this.router.navigate(['announcement', showMe.announcementId]);
-        }
-
-      }
-    });
-
-
-  }
 
   private updateTime() {
     this.currentDate = new Date();
@@ -103,13 +78,49 @@ export class DashboardComponent implements OnInit {
     const midnight = this.timeService.isMidnight(this.currentDate);
     if (midnight) {
       this.prayerService.prayerChangedSubject.next(null);
-      this.initAnnouncements();
     }
   }
 
-  private initAnnouncements() {
-    this.announcementService.getAnnouncements().subscribe(announcements => {
-      this.announcements = announcements;
+  private initAndShowAnnouncements() {
+    this.announcements$ = this.announcementService.getAnnouncements();
+
+    this.prayerService.prayerChangedSubject.subscribe(prayer => {
+
+      const today = new Date(this.currentDate);
+      if (prayer) {
+
+        this.announcements$.subscribe(announcements => {
+          // filter criteria
+          // 1. a.begin < currentDate < a.end
+          // 2. show only once each prayer-change
+          const showMe = announcements.find(announcement => {
+            const begin = new Date(announcement.scheduler.begin);
+            const end = new Date(announcement.scheduler.end);
+
+            const announcementHistory = this.announcementService.history.get(announcement.announcementId);
+
+            const previousPrayer = announcementHistory !== undefined ? announcementHistory.prayer : null;
+            const isNotSamePrayer = previousPrayer === null || JSON.stringify(previousPrayer) !== JSON.stringify(prayer);
+
+            return (today >= begin && today < end) && isNotSamePrayer;
+          });
+
+          if (showMe) {
+            this.announcementService.history.set(showMe.announcementId, { date: today, prayer, announcement: showMe });
+            this.timerSubscription.unsubscribe();
+
+            const timeout = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;;
+            console.log(timeout);
+            setTimeout(() => {
+              this.router.navigate(['/announcement', showMe.announcementId]);
+            }, timeout);
+
+          }
+        });
+
+      }
     });
+
   }
+
 }

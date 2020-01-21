@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Announcement } from '../shared/model/announcement';
+import { timer } from 'rxjs';
+import { AnnouncementService } from '../shared/service/announcement.service';
+import { templateJitUrl } from '@angular/compiler';
 
 @Component({
   selector: 'cr-announcement',
@@ -10,12 +11,15 @@ import { Announcement } from '../shared/model/announcement';
 })
 export class AnnouncementComponent implements OnInit {
 
-  private announcement$: Observable<Announcement>;
   private interval;
   private pastTime = 0;
+  private timerSubscription;
+  data: string;
+  content: string;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private route: Router) {
+              private route: Router,
+              private announcementService: AnnouncementService) {
   }
 
   ngOnInit() {
@@ -23,21 +27,31 @@ export class AnnouncementComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
 
       const announcementId = params.id;
-      // get announcement from server
+      const announcement = this.announcementService.history.get(announcementId).announcement;
 
-      this.interval = setInterval(() => {
+      if (announcement.image !== null && announcement.image !== undefined) {
+        this.announcementService.downloadImage(announcement.image.name).subscribe(response => {
+          this.data = response;
+        });
+      }
+
+
+      if (announcement.text !== null && announcement.text !== undefined) {
+        this.content = announcement.text.content;
+      }
+
+      const boundedTimer = timer(0, 1000);
+      this.timerSubscription = boundedTimer.subscribe(() => {
         this.pastTime++;
-        if (this.pastTime === 5) {
+
+        if (this.pastTime === 30) {
           clearInterval(this.interval);
           this.pastTime = 0;
-          console.log('here');
+          this.timerSubscription.unsubscribe();
           this.route.navigateByUrl('');
         }
-      }, 1000);
-
+      });
     });
-
-
   }
 
 }

@@ -24,4 +24,13 @@ export class AuthService {
     };
   }
 
+  getBasicHeaderAsBlob() {
+    return {
+      responseType: 'blob' as 'blob',
+      headers: new HttpHeaders({
+        Authorization: this.getBasic()
+      })
+    };
+  }
+
 }
