@@ -1,10 +1,10 @@
 <div *ngIf="asma$ | async as asma; else loading" id="asma-div" class="row">
 
-  <div class="col-md-4" id="asma-circle">
+  <div class="col-md-5" id="asma-circle">
     <p id="asma">{{asma.arabic}}</p>
   </div>
 
-  <div class="col-md-8">
+  <div class="col-md-7">
     <p id="asma-transcription">{{asma.transcription}}</p>
     <p id="asma-description">{{asma.description}}</p>
   </div>
