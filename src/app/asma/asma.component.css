@@ -2,16 +2,15 @@
   padding: 5rem;
   box-shadow: 10px 10px 10px 10px #a2a2a2;
 
-  background-color: rgba(255, 242, 164, 0.23);
+  background-color: rgba(137, 127, 88, 0.23);;
   border-color: rgba(238, 222, 146, 0.24);
-  opacity: 0.6;
   margin: 25px 0 0 100px;
 
   border-radius: 5px 5px 5px 5px;
   color: black;
 
   width: 38.5rem;
-  height: 16.5rem;
+  height: 18rem;
 }
 
 #asma-circle {

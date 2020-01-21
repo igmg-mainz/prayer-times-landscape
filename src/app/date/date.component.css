@@ -1,12 +1,12 @@
 #body {
   text-align: center;
-  background-color: rgba(255, 242, 164, 0.23);;
-  height: 26.5rem;
+  /*background-color: rgba(137, 127, 88, 0.23);;*/
+  background-color: silver;
+  height: 30rem;
   margin-left: 20%;
   margin-top: 6rem;
   border-style: ridge;
   border-width: thick;
-
 }
 
 #day {
