@@ -44,8 +44,8 @@ export class AnnouncementService {
    */
   getAnnouncementById(announcementId: string) {
 
-    const uri = `http://localhost:8092/announcements/${announcementId}`;
-    // const uri = `https://h2861894.stratoserver.net/services/DigitalPrayerServer/announcements/${announcementId}`;
+    // const uri = `http://localhost:8092/announcements/${announcementId}`;
+    const uri = `https://h2861894.stratoserver.net/services/DigitalPrayerServer/announcements/${announcementId}`;
     const httpOptions = this.authService.getBasicWithHeader();
 
     return this.http.get<Announcement>(uri, httpOptions)

@@ -1,0 +1,16 @@
+#title {
+  font-size: 15rem;
+  font-weight: bold;
+}
+
+#content {
+  margin-top: 2rem;
+  font-size: 12rem;
+}
+
+#image {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+}

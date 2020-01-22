@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timer } from 'rxjs';
 import { AnnouncementService } from '../shared/service/announcement.service';
-import { templateJitUrl } from '@angular/compiler';
+import { Text } from '../shared/model/text';
 
 @Component({
   selector: 'cr-announcement',
@@ -14,8 +14,9 @@ export class AnnouncementComponent implements OnInit {
   private interval;
   private pastTime = 0;
   private timerSubscription;
+
   data: string;
-  content: string;
+  text: Text;
 
   constructor(private activatedRoute: ActivatedRoute,
               private route: Router,
@@ -35,9 +36,8 @@ export class AnnouncementComponent implements OnInit {
         });
       }
 
-
       if (announcement.text !== null && announcement.text !== undefined) {
-        this.content = announcement.text.content;
+        this.text = announcement.text;
       }
 
       const boundedTimer = timer(0, 1000);

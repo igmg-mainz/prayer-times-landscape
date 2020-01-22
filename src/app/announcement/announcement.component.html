@@ -1,4 +1,12 @@
-<div class="container">
-  <img src="{{data}}" *ngIf="data" alt="Your image" style="display: block"/>
-  <span>{{content}}</span>
+<div>
+  <div class="row">
+    <img class="col-md-12" src="{{data}}" *ngIf="data" alt="Your image" style="display: block" id="image"/>
+  </div>
+
+  <div class="row" *ngIf="text">
+    <p class="text-center col-md-12" id="title">{{text.title}}</p>
+  </div>
+  <div class="row">
+    <p class="text-center col-md-12" id="content">{{text.content}}</p>
+  </div>
 </div>
