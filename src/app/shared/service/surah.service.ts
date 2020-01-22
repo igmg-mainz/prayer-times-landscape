@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { delay, expand, retryWhen, take, takeWhile } from 'rxjs/operators';
+import { delay, expand, filter, repeatWhen, retryWhen, take, takeUntil, takeWhile } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Surah } from '../model/surah';
 import { AuthService } from './auth.service';
@@ -25,9 +25,10 @@ export class SurahService {
 
     return this.http.get<Surah>(uri, headers)
       .pipe(
-        takeWhile(result => result.ayahs[0].text.length < 120),
-        retryWhen(errors => errors.pipe(delay(5000),
-        take(5)))
+        retryWhen(errors => errors.pipe(
+          delay(5000),
+          take(5))
+        )
       );
   }
 }
