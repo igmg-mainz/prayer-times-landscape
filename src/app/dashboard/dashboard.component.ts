@@ -77,7 +77,8 @@ export class DashboardComponent implements OnInit {
   private refreshWindowAtMidnight() {
     const midnight = this.timeService.isMidnight(this.currentDate);
     if (midnight) {
-      this.prayerService.prayerChangedSubject.next(null);
+      window.location.reload();
+      // this.prayerService.prayerChangedSubject.next(null);
     }
   }
 
@@ -93,9 +94,13 @@ export class DashboardComponent implements OnInit {
           // filter criteria
           // 1. a.begin < currentDate < a.end
           // 2. show only once each prayer-change
+
           const showMe = announcements.find(announcement => {
             const begin = new Date(announcement.scheduler.begin);
+            begin.setHours(0, 0, 0);
+
             const end = new Date(announcement.scheduler.end);
+            end.setHours(23, 59, 59);
 
             const announcementHistory = this.announcementService.history.get(announcement.announcementId);
 
@@ -109,8 +114,7 @@ export class DashboardComponent implements OnInit {
             this.announcementService.history.set(showMe.announcementId, { date: today, prayer, announcement: showMe });
             this.timerSubscription.unsubscribe();
 
-            const timeout = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;;
-            console.log(timeout);
+            const timeout = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
             setTimeout(() => {
               this.router.navigate(['/announcement', showMe.announcementId]);
             }, timeout);

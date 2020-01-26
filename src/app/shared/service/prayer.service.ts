@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { PrayerTimes } from '../model/prayer-times';
 import { Prayer } from '../model/prayer';
 import { TimeService } from './time.service';
 import { catchError, delay, map, retryWhen, take, tap } from 'rxjs/operators';
 import { Location } from '../model/location';
 import { AuthService } from './auth.service';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,20 +21,19 @@ export class PrayerService {
 
   constructor(private http: HttpClient,
               private timeService: TimeService,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private apiService: ApiService) {
   }
 
   getPrayers(month: string, location: Location): Observable<PrayerTimes> {
 
     const myDate = new Date();
     const currentDay = this.timeService.getDay(myDate);
-    // const uri = `http://localhost:8092/prayers/location/${location}?month=`;
-    const uri = `https://h2861894.stratoserver.net/services/DigitalPrayerServer/prayers/location/${location}?month=`;
-
     const httpOptions = this.authService.getBasicWithHeader();
+    const uri = this.apiService.prayersUri(location);
 
     return this.http.get<Array<PrayerTimes>>(`${uri}${month}`, httpOptions).pipe(
-      retryWhen(errors => errors.pipe(delay(5000), take(10))),
+      retryWhen(errors => errors.pipe(delay(15000), take(10))),
       map(list => list.find(times => this.timeService.getDay(new Date(times.timeStamp)) === currentDay)),
       tap(prayerTimes => {
         this.initCurrentPrayer(prayerTimes);
@@ -61,7 +61,7 @@ export class PrayerService {
     if (this.nextPrayer) {
       const equal = this.timeService.isLogicalEqual(this.nextPrayer.time, currentDate);
       if (equal) {
-        console.log(equal);
+        console.log(' ====> ');
         this.prayerChangedSubject.next(this.nextPrayer);
       }
     }

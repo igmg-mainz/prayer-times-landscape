@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { catchError, delay, map, retryWhen, switchMap, take } from 'rxjs/operators';
 import { Announcement } from '../model/announcement';
 import { AnnouncementHistory } from '../model/announcement-history';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,17 +17,16 @@ export class AnnouncementService {
   private announcements: Array<Announcement>;
 
   constructor(private http: HttpClient,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private apiService: ApiService) {
   }
 
   /**
    * return all available announcements from server
    */
   getAnnouncements() {
-    // const uri = 'http://localhost:8092/announcements';
-    const uri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/announcements';
 
-
+    const uri = this.apiService.announcements();
     const httpOptions = this.authService.getBasicWithHeader();
 
     return this.http.get<Array<Announcement>>(`${uri}`, httpOptions)
@@ -44,8 +44,7 @@ export class AnnouncementService {
    */
   getAnnouncementById(announcementId: string) {
 
-    // const uri = `http://localhost:8092/announcements/${announcementId}`;
-    const uri = `https://h2861894.stratoserver.net/services/DigitalPrayerServer/announcements/${announcementId}`;
+    const uri = this.apiService.announcement(announcementId);
     const httpOptions = this.authService.getBasicWithHeader();
 
     return this.http.get<Announcement>(uri, httpOptions)
@@ -57,11 +56,9 @@ export class AnnouncementService {
 
   downloadImage(name: string) {
 
-    // const baseUri = 'http://localhost:8092/announcements';
-    const baseUri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/announcements';
-
+    const uri = this.apiService.announcementImage(name);
     const httpOptions = this.authService.getBasicHeaderAsBlob();
-    const uri = `${baseUri}/image/${name}`;
+
     return this.http.get(uri, httpOptions)
       .pipe(
         switchMap(response => {

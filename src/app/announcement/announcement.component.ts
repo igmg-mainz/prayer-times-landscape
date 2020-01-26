@@ -44,7 +44,7 @@ export class AnnouncementComponent implements OnInit {
       this.timerSubscription = boundedTimer.subscribe(() => {
         this.pastTime++;
 
-        if (this.pastTime === 30) {
+        if (this.pastTime === 10) {
           clearInterval(this.interval);
           this.pastTime = 0;
           this.timerSubscription.unsubscribe();

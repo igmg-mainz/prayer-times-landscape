@@ -4,10 +4,7 @@ import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { Asma } from '../model/asma';
 import { delay, retryWhen, take } from 'rxjs/operators';
-
-// const uri = 'http://localhost:8092/asma';
-const uri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/asma';
-
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,15 +12,17 @@ const uri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/asma
 export class AsmaService {
 
   constructor(private http: HttpClient,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private apiService: ApiService) {
   }
 
   getRandomAsma(): Observable<Asma> {
     const headers = this.authService.getBasicWithHeader();
+    const uri = this.apiService.randomAsma();
 
     return this.http.get<Asma>(uri, headers)
-      .pipe(retryWhen(errors => errors.pipe(delay(5000),
-        take(5)))
+      .pipe(retryWhen(errors => errors.pipe(delay(15000),
+        take(10)))
       );
   }
 
