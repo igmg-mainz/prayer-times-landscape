@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, of, timer } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
 import { PrayerService } from '../shared/service/prayer.service';
 import { Prayer } from '../shared/model/prayer';
 import { TimeService } from '../shared/service/time.service';
 import { AnnouncementService } from '../shared/service/announcement.service';
 import { Router } from '@angular/router';
 import { AnnouncementWrapper } from '../shared/model/announcement-wrapper';
+import { CounterService } from '../shared/service/counter.service';
 
 @Component({
   selector: 'cr-dashboard',
@@ -14,7 +15,6 @@ import { AnnouncementWrapper } from '../shared/model/announcement-wrapper';
 })
 export class DashboardComponent implements OnInit {
 
-  private counter = 0;
   public currentDate: Date;
   public currentDateSubject: BehaviorSubject<Date> = new BehaviorSubject<Date>(this.currentDate);
   public nextPrayer$: Observable<Prayer>;
@@ -26,7 +26,8 @@ export class DashboardComponent implements OnInit {
   constructor(private prayerService: PrayerService,
               private timeService: TimeService,
               private announcementService: AnnouncementService,
-              public router: Router) {
+              public router: Router,
+              private counterService: CounterService) {
   }
 
 
@@ -97,7 +98,7 @@ export class DashboardComponent implements OnInit {
             const fixedRate = this.announcementService.calculateRepetition(announcement, interval);
             const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
 
-            return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer };
+            return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: currentPrayer };
           });
         });
       }
@@ -108,6 +109,29 @@ export class DashboardComponent implements OnInit {
 
   private showAnnouncements() {
 
+    if (this.wrappers) {
+
+      this.wrappers.forEach(wrapper => {
+
+        const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
+        console.log(value);
+        const fromHistory = this.announcementService.history.get(wrapper.announcement.announcementId);
+        console.log(fromHistory);
+
+        if ( (fromHistory === undefined || fromHistory === null) || fromHistory.repetition < value) {
+          this.announcementService.history.set(wrapper.announcement.announcementId, {
+            date: this.currentDate,
+            prayer: wrapper.prayer,
+            announcement: wrapper.announcement,
+            repetition: value
+          });
+
+          this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
+        }
+
+      });
+
+    }
 
 
   }

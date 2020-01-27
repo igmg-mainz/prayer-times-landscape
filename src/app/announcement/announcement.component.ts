@@ -28,6 +28,8 @@ export class AnnouncementComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
 
       const announcementId = params.id;
+      console.log(announcementId);
+
       const announcement = this.announcementService.history.get(announcementId).announcement;
 
       if (announcement.image !== null && announcement.image !== undefined) {

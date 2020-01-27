@@ -2,6 +2,7 @@
  *
  */
 import { Announcement } from './announcement';
+import { Prayer } from './prayer';
 
 export interface AnnouncementWrapper {
 
@@ -9,4 +10,5 @@ export interface AnnouncementWrapper {
   interval: number;
   fixedRate: number;
   maxRepetition: number;
+  prayer: Prayer;
 }
