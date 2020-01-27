@@ -9,4 +9,5 @@ export interface AnnouncementHistory {
   date: Date;
   prayer: Prayer;
   announcement: Announcement;
+  repetition: number;
 }

@@ -14,6 +14,7 @@ import { ApiService } from './api.service';
 })
 export class PrayerService {
 
+  private prayerTimes: PrayerTimes;
   private currentPrayer: Prayer;
   private nextPrayer: Prayer;
   public nextPrayerSubject: BehaviorSubject<Prayer> = new BehaviorSubject<Prayer>(this.nextPrayer);
@@ -38,6 +39,7 @@ export class PrayerService {
       tap(prayerTimes => {
         this.initCurrentPrayer(prayerTimes);
         this.initNextPrayer(prayerTimes);
+        this.prayerTimes = prayerTimes;
       }),
       catchError(this.handleError)
     );
@@ -61,11 +63,32 @@ export class PrayerService {
     if (this.nextPrayer) {
       const equal = this.timeService.isLogicalEqual(this.nextPrayer.time, currentDate);
       if (equal) {
-        console.log(' ====> ');
         this.prayerChangedSubject.next(this.nextPrayer);
       }
     }
+  }
 
+
+  /**
+   *
+   * Returns the interval in seconds between two prayer-times
+   * @param currentPrayer
+   * @param nextPrayer
+   */
+  intervalToNextPrayer(currentPrayer: Prayer) {
+
+    const nextPrayer = this.getNextPrayer(currentPrayer);
+    const timeOfNextPrayer = this.timeService.parseToDate(nextPrayer.time).valueOf();
+    const timeOfCurrentPrayer = this.timeService.parseToDate(currentPrayer.time).valueOf();
+    return (timeOfNextPrayer - timeOfCurrentPrayer) / 1000;
+  }
+
+  getNextPrayer(currentPrayer: Prayer) {
+    return this.prayerTimes.prayers.find(prayer => {
+      const currentTime = this.timeService.parseToDate(currentPrayer.time);
+      const prayerTime = this.timeService.parseToDate(prayer.time);
+      return prayerTime > currentTime;
+    });
   }
 
 

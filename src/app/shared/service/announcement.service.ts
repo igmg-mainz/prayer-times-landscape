@@ -7,6 +7,8 @@ import { Announcement } from '../model/announcement';
 import { AnnouncementHistory } from '../model/announcement-history';
 import { ApiService } from './api.service';
 
+const numberOfPrayers = 5;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -65,6 +67,18 @@ export class AnnouncementService {
           return this.readFile(response);
         })
       );
+  }
+
+  calculateRepetition(announcement: Announcement, interval: number) {
+
+    const displayDuration = 30;
+    const latency = 10;
+    const repetitionEachPrayer = Math.floor(announcement.scheduler.fixedRate / 5);
+    return Math.floor(interval / repetitionEachPrayer);
+  }
+
+  calculateMaxRepetition(announcement: Announcement) {
+    return Math.floor(announcement.scheduler.fixedRate / numberOfPrayers);
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -4,8 +4,8 @@ import { PrayerService } from '../shared/service/prayer.service';
 import { Prayer } from '../shared/model/prayer';
 import { TimeService } from '../shared/service/time.service';
 import { AnnouncementService } from '../shared/service/announcement.service';
-import { Announcement } from '../shared/model/announcement';
 import { Router } from '@angular/router';
+import { AnnouncementWrapper } from '../shared/model/announcement-wrapper';
 
 @Component({
   selector: 'cr-dashboard',
@@ -14,13 +14,14 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
 
+  private counter = 0;
   public currentDate: Date;
   public currentDateSubject: BehaviorSubject<Date> = new BehaviorSubject<Date>(this.currentDate);
   public nextPrayer$: Observable<Prayer>;
   private timerSubscription;
 
   private leftTime: number;
-  private announcements$: Observable<Array<Announcement>>;
+  private wrappers: Array<AnnouncementWrapper>;
 
   constructor(private prayerService: PrayerService,
               private timeService: TimeService,
@@ -31,9 +32,9 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.initDate();
+    this.initAnnouncements();
     this.initAndStartTimer();
     this.initLeftTime();
-    this.initAndShowAnnouncements();
   }
 
   onTimerFinished() {
@@ -50,6 +51,7 @@ export class DashboardComponent implements OnInit {
       this.updateTime();
       this.prayerService.updatePrayers(this.currentDate);
       this.refreshWindowAtMidnight();
+      this.showAnnouncements();
     });
   }
 
@@ -82,49 +84,31 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  private initAndShowAnnouncements() {
-    this.announcements$ = this.announcementService.getAnnouncements();
 
-    this.prayerService.prayerChangedSubject.subscribe(prayer => {
+  private initAnnouncements() {
+    // listen to prayer-change
+    this.prayerService.prayerChangedSubject.subscribe(currentPrayer => {
+      // prayer time changed
+      if (currentPrayer) {
+        this.announcementService.getAnnouncements().subscribe(announcements => {
+          this.wrappers = announcements.map(announcement => {
 
-      const today = new Date(this.currentDate);
-      if (prayer) {
+            const interval = this.prayerService.intervalToNextPrayer(currentPrayer);
+            const fixedRate = this.announcementService.calculateRepetition(announcement, interval);
+            const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
 
-        this.announcements$.subscribe(announcements => {
-          // filter criteria
-          // 1. a.begin < currentDate < a.end
-          // 2. show only once each prayer-change
-
-          const showMe = announcements.find(announcement => {
-            const begin = new Date(announcement.scheduler.begin);
-            begin.setHours(0, 0, 0);
-
-            const end = new Date(announcement.scheduler.end);
-            end.setHours(23, 59, 59);
-
-            const announcementHistory = this.announcementService.history.get(announcement.announcementId);
-
-            const previousPrayer = announcementHistory !== undefined ? announcementHistory.prayer : null;
-            const isNotSamePrayer = previousPrayer === null || JSON.stringify(previousPrayer) !== JSON.stringify(prayer);
-
-            return (today >= begin && today < end) && isNotSamePrayer;
+            return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer };
           });
-
-          if (showMe) {
-            this.announcementService.history.set(showMe.announcementId, { date: today, prayer, announcement: showMe });
-            this.timerSubscription.unsubscribe();
-
-            const timeout = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
-            setTimeout(() => {
-              this.router.navigate(['/announcement', showMe.announcementId]);
-            }, timeout);
-
-          }
         });
-
       }
     });
 
   }
 
+
+  private showAnnouncements() {
+
+
+
+  }
 }
