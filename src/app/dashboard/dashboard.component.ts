@@ -115,43 +115,62 @@ export class DashboardComponent implements OnInit {
 
     if (this.wrappers) {
 
-      this.wrappers.forEach(wrapper => {
 
-        const fromHistory = this.announcementService.history.get(wrapper.announcement.announcementId);
+      if (this.announcementService.viewIsBlocked === false) {
 
-        if (((fromHistory === undefined || fromHistory === null) && this.announcementService.viewIsBlocked === false)) {
+        const announcement = this.wrappers[Math.floor(Math.random() * this.wrappers.length)].announcement;
+        this.announcementService.viewIsBlocked = true;
+        this.announcementService.history.set(announcement.announcementId, {
+          date: this.currentDate,
+          prayer: this.prayerService.getCurrentPrayer(),
+          announcement,
+          repetition: 0
+        });
 
-          const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
-          this.announcementService.viewIsBlocked = true;
-          this.announcementService.history.set(wrapper.announcement.announcementId, {
-            date: this.currentDate,
-            prayer: wrapper.prayer,
-            announcement: wrapper.announcement,
-            repetition: value
-          });
-          setTimeout(() => {
-            this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
-          }, 2000);
-        }
+        setTimeout(() => {
+          this.router.navigate(['/announcement', announcement.announcementId]);
+        }, 900000);
+
+      }
 
 
-        if (fromHistory && (this.announcementService.history.size === this.wrappers.length) &&
-          this.announcementService.viewIsBlocked === false && fromHistory.repetition < wrapper.maxRepetition) {
-
-          const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
-          this.announcementService.viewIsBlocked = true;
-          this.announcementService.history.set(wrapper.announcement.announcementId, {
-            date: this.currentDate,
-            prayer: wrapper.prayer,
-            announcement: wrapper.announcement,
-            repetition: value
-          });
-          setTimeout(() => {
-            this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
-          }, 200);
-        }
-
-      });
+      // this.wrappers.forEach(wrapper => {
+      //
+      //   const fromHistory = this.announcementService.history.get(wrapper.announcement.announcementId);
+      //
+      //   if (((fromHistory === undefined || fromHistory === null) && this.announcementService.viewIsBlocked === false)) {
+      //
+      //     const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
+      //     this.announcementService.viewIsBlocked = true;
+      //     this.announcementService.history.set(wrapper.announcement.announcementId, {
+      //       date: this.currentDate,
+      //       prayer: wrapper.prayer,
+      //       announcement: wrapper.announcement,
+      //       repetition: value
+      //     });
+      //     setTimeout(() => {
+      //       this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
+      //     }, 2000);
+      //   }
+      //
+      //
+      //   if (fromHistory && (this.announcementService.history.size === this.wrappers.length) &&
+      //     this.announcementService.viewIsBlocked === false && fromHistory.repetition < wrapper.maxRepetition) {
+      //
+      //     const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
+      //     this.announcementService.viewIsBlocked = true;
+      //     this.announcementService.history.set(wrapper.announcement.announcementId, {
+      //       date: this.currentDate,
+      //       prayer: wrapper.prayer,
+      //       announcement: wrapper.announcement,
+      //       repetition: value
+      //     });
+      //     setTimeout(() => {
+      //       this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
+      //     }, 200);
+      //   }
+      //
+      // });
 
     }
   }

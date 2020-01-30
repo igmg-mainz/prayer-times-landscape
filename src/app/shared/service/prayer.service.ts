@@ -94,6 +94,10 @@ export class PrayerService {
     });
   }
 
+  getCurrentPrayer() {
+    return this.currentPrayer;
+  }
+
 
   private initCurrentPrayer(prayerTimes: PrayerTimes) {
     const currentDate = new Date();
