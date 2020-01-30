@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
-import { PrayerService } from '../shared/service/prayer.service';
-import { Prayer } from '../shared/model/prayer';
-import { TimeService } from '../shared/service/time.service';
-import { AnnouncementService } from '../shared/service/announcement.service';
-import { Router } from '@angular/router';
-import { AnnouncementWrapper } from '../shared/model/announcement-wrapper';
-import { CounterService } from '../shared/service/counter.service';
+import {Component, OnInit} from '@angular/core';
+import {BehaviorSubject, Observable, of, timer} from 'rxjs';
+import {PrayerService} from '../shared/service/prayer.service';
+import {Prayer} from '../shared/model/prayer';
+import {TimeService} from '../shared/service/time.service';
+import {AnnouncementService} from '../shared/service/announcement.service';
+import {Router} from '@angular/router';
+import {AnnouncementWrapper} from '../shared/model/announcement-wrapper';
+import {CounterService} from '../shared/service/counter.service';
+import {Announcement} from '../shared/model/announcement';
 
 @Component({
   selector: 'cr-dashboard',
@@ -22,6 +23,7 @@ export class DashboardComponent implements OnInit {
 
   private leftTime: number;
   private wrappers: Array<AnnouncementWrapper>;
+  private announcements$: Observable<Array<Announcement>>;
 
   constructor(private prayerService: PrayerService,
               private timeService: TimeService,
@@ -34,6 +36,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.initDate();
     this.initAnnouncements();
+    this.initAnnouncementWrappers();
     this.initAndStartTimer();
     this.initLeftTime();
   }
@@ -81,24 +84,25 @@ export class DashboardComponent implements OnInit {
     const midnight = this.timeService.isMidnight(this.currentDate);
     if (midnight) {
       window.location.reload();
-      // this.prayerService.prayerChangedSubject.next(null);
     }
   }
 
 
-  private initAnnouncements() {
+  private initAnnouncementWrappers() {
     // listen to prayer-change
     this.prayerService.prayerChangedSubject.subscribe(currentPrayer => {
       // prayer time changed
       if (currentPrayer) {
-        this.announcementService.getAnnouncements().subscribe(announcements => {
+
+        this.announcements$.subscribe(announcements => {
           this.wrappers = announcements.map(announcement => {
 
             const interval = this.prayerService.intervalToNextPrayer(currentPrayer);
             const fixedRate = this.announcementService.calculateRepetition(announcement, interval);
-            const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
+            const maxRepetitionEachPrayer = 2;
+            // const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
 
-            return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: currentPrayer };
+            return {announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: currentPrayer};
           });
         });
       }
@@ -113,26 +117,47 @@ export class DashboardComponent implements OnInit {
 
       this.wrappers.forEach(wrapper => {
 
-        const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
-        console.log(value);
         const fromHistory = this.announcementService.history.get(wrapper.announcement.announcementId);
-        console.log(fromHistory);
 
-        if ( (fromHistory === undefined || fromHistory === null) || fromHistory.repetition < value) {
+        if (((fromHistory === undefined || fromHistory === null) && this.announcementService.viewIsBlocked === false)) {
+
+          const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
+          this.announcementService.viewIsBlocked = true;
           this.announcementService.history.set(wrapper.announcement.announcementId, {
             date: this.currentDate,
             prayer: wrapper.prayer,
             announcement: wrapper.announcement,
             repetition: value
           });
+          setTimeout(() => {
+            this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
+          }, 2000);
+        }
 
-          this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
+
+        if (fromHistory && (this.announcementService.history.size === this.wrappers.length) &&
+          this.announcementService.viewIsBlocked === false && fromHistory.repetition < wrapper.maxRepetition) {
+
+          const value = this.counterService.getAndIncrement(wrapper.announcement.announcementId);
+          this.announcementService.viewIsBlocked = true;
+          this.announcementService.history.set(wrapper.announcement.announcementId, {
+            date: this.currentDate,
+            prayer: wrapper.prayer,
+            announcement: wrapper.announcement,
+            repetition: value
+          });
+          setTimeout(() => {
+            this.router.navigate(['/announcement', wrapper.announcement.announcementId]);
+          }, 200);
         }
 
       });
 
     }
+  }
 
 
+  private initAnnouncements() {
+    this.announcements$ = this.announcementService.getAnnouncements();
   }
 }

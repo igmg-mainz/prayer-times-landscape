@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AuthService } from './auth.service';
-import { catchError, delay, map, retryWhen, switchMap, take } from 'rxjs/operators';
-import { Announcement } from '../model/announcement';
-import { AnnouncementHistory } from '../model/announcement-history';
-import { ApiService } from './api.service';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, throwError} from 'rxjs';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {AuthService} from './auth.service';
+import {catchError, delay, map, retryWhen, switchMap, take} from 'rxjs/operators';
+import {Announcement} from '../model/announcement';
+import {AnnouncementHistory} from '../model/announcement-history';
+import {ApiService} from './api.service';
 
 const numberOfPrayers = 5;
 
@@ -16,6 +16,8 @@ export class AnnouncementService {
 
   public counter = 0;
   public history = new Map<string, AnnouncementHistory>();
+  public viewIsBlocked = false;
+  public announcemendShown: BehaviorSubject<Announcement> = new BehaviorSubject<Announcement>(null);
   private announcements: Array<Announcement>;
 
   constructor(private http: HttpClient,

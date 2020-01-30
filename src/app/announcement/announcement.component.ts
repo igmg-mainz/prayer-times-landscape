@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { timer } from 'rxjs';
-import { AnnouncementService } from '../shared/service/announcement.service';
-import { Text } from '../shared/model/text';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {timer} from 'rxjs';
+import {AnnouncementService} from '../shared/service/announcement.service';
+import {Text} from '../shared/model/text';
 
 @Component({
   selector: 'cr-announcement',
@@ -26,33 +26,40 @@ export class AnnouncementComponent implements OnInit {
   ngOnInit() {
 
     this.activatedRoute.params.subscribe(params => {
+      this.announcementService.viewIsBlocked = true;
 
       const announcementId = params.id;
-      console.log(announcementId);
+      const history = this.announcementService.history.get(announcementId);
+      const announcement = history !== undefined ? history.announcement : null;
 
-      const announcement = this.announcementService.history.get(announcementId).announcement;
-
-      if (announcement.image !== null && announcement.image !== undefined) {
-        this.announcementService.downloadImage(announcement.image.name).subscribe(response => {
-          this.data = response;
-        });
-      }
-
-      if (announcement.text !== null && announcement.text !== undefined) {
-        this.text = announcement.text;
-      }
-
-      const boundedTimer = timer(0, 1000);
-      this.timerSubscription = boundedTimer.subscribe(() => {
-        this.pastTime++;
-
-        if (this.pastTime === 10) {
-          clearInterval(this.interval);
-          this.pastTime = 0;
-          this.timerSubscription.unsubscribe();
-          this.route.navigateByUrl('');
+      if (announcement) {
+        if (announcement.image !== null && announcement.image !== undefined) {
+          this.announcementService.downloadImage(announcement.image.name).subscribe(response => {
+            this.data = response;
+          });
         }
-      });
+
+        if (announcement.text !== null && announcement.text !== undefined) {
+          this.text = announcement.text;
+        }
+
+        const boundedTimer = timer(0, 1000);
+        this.timerSubscription = boundedTimer.subscribe(() => {
+          this.pastTime++;
+
+          if (this.pastTime === 2) {
+            clearInterval(this.interval);
+            this.pastTime = 0;
+            this.timerSubscription.unsubscribe();
+            this.route.navigateByUrl('');
+            this.announcementService.announcemendShown.next(announcement);
+            this.announcementService.viewIsBlocked = false;
+          }
+        });
+      } else {
+        this.route.navigateByUrl('');
+      }
+
     });
   }
 

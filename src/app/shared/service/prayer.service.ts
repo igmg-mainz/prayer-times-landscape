@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { PrayerTimes } from '../model/prayer-times';
-import { Prayer } from '../model/prayer';
-import { TimeService } from './time.service';
-import { catchError, delay, map, retryWhen, take, tap } from 'rxjs/operators';
-import { Location } from '../model/location';
-import { AuthService } from './auth.service';
-import { ApiService } from './api.service';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {BehaviorSubject, Observable, throwError} from 'rxjs';
+import {PrayerTimes} from '../model/prayer-times';
+import {Prayer} from '../model/prayer';
+import {TimeService} from './time.service';
+import {catchError, delay, map, retryWhen, take, tap} from 'rxjs/operators';
+import {Location} from '../model/location';
+import {AuthService} from './auth.service';
+import {ApiService} from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +78,9 @@ export class PrayerService {
   intervalToNextPrayer(currentPrayer: Prayer) {
 
     const nextPrayer = this.getNextPrayer(currentPrayer);
+    if (!nextPrayer) {
+      return -1;
+    }
     const timeOfNextPrayer = this.timeService.parseToDate(nextPrayer.time).valueOf();
     const timeOfCurrentPrayer = this.timeService.parseToDate(currentPrayer.time).valueOf();
     return (timeOfNextPrayer - timeOfCurrentPrayer) / 1000;
