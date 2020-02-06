@@ -6,8 +6,8 @@ import { Location } from '../model/location';
 })
 export class ApiService {
 
-  private uri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/';
-  // private uri = 'http://localhost:8092/';
+  // private uri = 'https://h2861894.stratoserver.net/services/DigitalPrayerServer/';
+  private uri = 'http://localhost:8092/';
 
   constructor() {
   }

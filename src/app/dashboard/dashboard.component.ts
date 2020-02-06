@@ -1,13 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {BehaviorSubject, Observable, of, timer} from 'rxjs';
-import {PrayerService} from '../shared/service/prayer.service';
-import {Prayer} from '../shared/model/prayer';
-import {TimeService} from '../shared/service/time.service';
-import {AnnouncementService} from '../shared/service/announcement.service';
-import {Router} from '@angular/router';
-import {AnnouncementWrapper} from '../shared/model/announcement-wrapper';
-import {CounterService} from '../shared/service/counter.service';
-import {Announcement} from '../shared/model/announcement';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable, of, timer } from 'rxjs';
+import { PrayerService } from '../shared/service/prayer.service';
+import { Prayer } from '../shared/model/prayer';
+import { TimeService } from '../shared/service/time.service';
+import { AnnouncementService } from '../shared/service/announcement.service';
+import { Router } from '@angular/router';
+import { AnnouncementWrapper } from '../shared/model/announcement-wrapper';
+import { CounterService } from '../shared/service/counter.service';
+import { Announcement } from '../shared/model/announcement';
+import { delay, share } from 'rxjs/operators';
 
 @Component({
   selector: 'cr-dashboard',
@@ -102,7 +103,7 @@ export class DashboardComponent implements OnInit {
             const maxRepetitionEachPrayer = 2;
             // const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
 
-            return {announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: currentPrayer};
+            return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: currentPrayer };
           });
         });
       }
@@ -117,7 +118,6 @@ export class DashboardComponent implements OnInit {
 
 
       if (this.announcementService.viewIsBlocked === false) {
-
         const announcement = this.wrappers[Math.floor(Math.random() * this.wrappers.length)].announcement;
         this.announcementService.viewIsBlocked = true;
         this.announcementService.history.set(announcement.announcementId, {
@@ -177,6 +177,9 @@ export class DashboardComponent implements OnInit {
 
 
   private initAnnouncements() {
-    this.announcements$ = this.announcementService.getAnnouncements();
+    this.announcements$ = this.announcementService.getAnnouncements().pipe(
+      delay(1000),
+      share()
+    );
   }
 }
