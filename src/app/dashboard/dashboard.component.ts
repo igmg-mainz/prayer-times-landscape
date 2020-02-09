@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit {
 
         setTimeout(() => {
           this.router.navigate(['/announcement', announcement.announcementId]);
-        }, 900000);
+        }, 300000);
 
       }
 
