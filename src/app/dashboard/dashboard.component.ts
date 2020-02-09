@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 import { AnnouncementWrapper } from '../shared/model/announcement-wrapper';
 import { CounterService } from '../shared/service/counter.service';
 import { Announcement } from '../shared/model/announcement';
-import { delay, share } from 'rxjs/operators';
+import { delay, share, tap } from 'rxjs/operators';
+import { by } from 'protractor';
 
 @Component({
   selector: 'cr-dashboard',
@@ -91,32 +92,33 @@ export class DashboardComponent implements OnInit {
 
   private initAnnouncementWrappers() {
     // listen to prayer-change
-    this.prayerService.prayerChangedSubject.subscribe(currentPrayer => {
-      // prayer time changed
-      if (currentPrayer) {
 
-        this.announcements$.subscribe(announcements => {
-          this.wrappers = announcements.map(announcement => {
-
-            const interval = this.prayerService.intervalToNextPrayer(currentPrayer);
-            const fixedRate = this.announcementService.calculateRepetition(announcement, interval);
-            const maxRepetitionEachPrayer = 2;
-            // const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
-
-            return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: currentPrayer };
-          });
-        });
-      }
-    });
+    // this.prayerService.prayerChangedSubject.subscribe(currentPrayer => {
+    //   // prayer time changed
+    //   if (currentPrayer) {
+    //
+    //     this.announcements$.subscribe(announcements => {
+    //       this.wrappers = announcements.map(announcement => {
+    //
+    //         const interval = this.prayerService.intervalToNextPrayer(currentPrayer);
+    //         const fixedRate = this.announcementService.calculateRepetition(announcement, interval);
+    //         const maxRepetitionEachPrayer = 2;
+    //         // const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
+    //
+    //         return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: currentPrayer };
+    //       });
+    //     });
+    //   }
+    // });
 
   }
 
 
   private showAnnouncements() {
 
-    if (this.wrappers) {
+    const tenthMinute = this.currentDate.getMinutes() % 10 === 0 && this.currentDate.getSeconds() === 0;
 
-
+    if (this.wrappers && tenthMinute) {
       if (this.announcementService.viewIsBlocked === false) {
         const announcement = this.wrappers[Math.floor(Math.random() * this.wrappers.length)].announcement;
         this.announcementService.viewIsBlocked = true;
@@ -129,7 +131,7 @@ export class DashboardComponent implements OnInit {
 
         setTimeout(() => {
           this.router.navigate(['/announcement', announcement.announcementId]);
-        }, 300000);
+        }, 100);
 
       }
 
@@ -177,9 +179,20 @@ export class DashboardComponent implements OnInit {
 
 
   private initAnnouncements() {
-    this.announcements$ = this.announcementService.getAnnouncements().pipe(
+    this.announcementService.getAnnouncements().pipe(
       delay(1000),
       share()
-    );
+    ).subscribe(announcements => {
+      this.wrappers = announcements.map(announcement => {
+        // const interval = this.prayerService.intervalToNextPrayer(currentPrayer);
+        // const fixedRate = this.announcementService.calculateRepetition(announcement, interval);
+        const interval = 0;
+        const fixedRate = 0;
+        const maxRepetitionEachPrayer = 2;
+        // const maxRepetitionEachPrayer = this.announcementService.calculateMaxRepetition(announcement);
+
+        return { announcement, interval, fixedRate, maxRepetition: maxRepetitionEachPrayer, prayer: null };
+      });
+    });
   }
 }
