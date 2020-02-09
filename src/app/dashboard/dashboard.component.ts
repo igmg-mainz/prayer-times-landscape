@@ -116,9 +116,9 @@ export class DashboardComponent implements OnInit {
 
   private showAnnouncements() {
 
-    const tenthMinute = this.currentDate.getMinutes() % 10 === 0 && this.currentDate.getSeconds() === 0;
+    const fifthMinute = this.currentDate.getMinutes() % 5 === 0 && this.currentDate.getSeconds() === 0;
 
-    if (this.wrappers && tenthMinute) {
+    if (this.wrappers && fifthMinute) {
       if (this.announcementService.viewIsBlocked === false) {
         const announcement = this.wrappers[Math.floor(Math.random() * this.wrappers.length)].announcement;
         this.announcementService.viewIsBlocked = true;
