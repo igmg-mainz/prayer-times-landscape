@@ -9,7 +9,6 @@ import { AnnouncementWrapper } from '../shared/model/announcement-wrapper';
 import { CounterService } from '../shared/service/counter.service';
 import { Announcement } from '../shared/model/announcement';
 import { delay, share, tap } from 'rxjs/operators';
-import { by } from 'protractor';
 
 @Component({
   selector: 'cr-dashboard',
@@ -116,12 +115,11 @@ export class DashboardComponent implements OnInit {
 
   private showAnnouncements() {
 
-    const fifthMinute = this.currentDate.getMinutes() % 5 === 0 && this.currentDate.getSeconds() === 0;
+    if (this.wrappers) {
+      const announcement = this.wrappers[Math.floor(Math.random() * this.wrappers.length)].announcement;
+      const isPeriodTime = this.currentDate.getMinutes() % announcement.scheduler.fixedRate === 0 && this.currentDate.getSeconds() === 0;
 
-    if (this.wrappers && fifthMinute) {
-      if (this.announcementService.viewIsBlocked === false) {
-        const announcement = this.wrappers[Math.floor(Math.random() * this.wrappers.length)].announcement;
-        this.announcementService.viewIsBlocked = true;
+      if (this.announcementService.viewIsBlocked === false && isPeriodTime) {
         this.announcementService.history.set(announcement.announcementId, {
           date: this.currentDate,
           prayer: this.prayerService.getCurrentPrayer(),
@@ -130,9 +128,9 @@ export class DashboardComponent implements OnInit {
         });
 
         setTimeout(() => {
+          tap(() => this.announcementService.viewIsBlocked = true);
           this.router.navigate(['/announcement', announcement.announcementId]);
-        }, 100);
-
+        }, 500);
       }
 
 
