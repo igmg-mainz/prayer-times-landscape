@@ -116,21 +116,25 @@ export class DashboardComponent implements OnInit {
   private showAnnouncements() {
 
     if (this.wrappers) {
-      const announcement = this.wrappers[Math.floor(Math.random() * this.wrappers.length)].announcement;
-      const isPeriodTime = this.currentDate.getMinutes() % announcement.scheduler.fixedRate === 0 && this.currentDate.getSeconds() === 0;
+      const wrapper = this.wrappers[Math.floor(Math.random() * this.wrappers.length)];
 
-      if (this.announcementService.viewIsBlocked === false && isPeriodTime) {
-        this.announcementService.history.set(announcement.announcementId, {
-          date: this.currentDate,
-          prayer: this.prayerService.getCurrentPrayer(),
-          announcement,
-          repetition: 0
-        });
+      if (wrapper !== undefined && wrapper !== null) {
+        const announcement = wrapper.announcement;
+        const isPeriodTime = this.currentDate.getMinutes() % announcement.scheduler.fixedRate === 0 && this.currentDate.getSeconds() === 0;
 
-        setTimeout(() => {
-          tap(() => this.announcementService.viewIsBlocked = true);
-          this.router.navigate(['/announcement', announcement.announcementId]);
-        }, 500);
+        if (this.announcementService.viewIsBlocked === false && isPeriodTime) {
+          this.announcementService.history.set(announcement.announcementId, {
+            date: this.currentDate,
+            prayer: this.prayerService.getCurrentPrayer(),
+            announcement,
+            repetition: 0
+          });
+
+          setTimeout(() => {
+            tap(() => this.announcementService.viewIsBlocked = true);
+            this.router.navigate(['/announcement', announcement.announcementId]);
+          }, 500);
+        }
       }
 
 
